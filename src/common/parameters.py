@@ -1,7 +1,5 @@
-from databricks.sdk.runtime import dbutils
-from src.common.utils import Utils # ty: ignore[unresolved-import]
-from typing import Self
-from dataclasses import field
+from databricks.sdk.runtime import dbutils as dbx
+from src.common.utils import Utils
 
 
 class Parameters:
@@ -12,21 +10,14 @@ class Parameters:
         parameters.expected_parameter
         parameters.as_dict
     """
-    as_dict = field(default_factory=dict)
+    def __init__(self):
+        self.as_dict = {}
+
     @classmethod
-    def get(cls) -> Self:
-        params = dbutils.widgets.getAll().items() # ty: ignore[unresolved-attribute]
-        for k, v in params:
-            setattr(
-                cls, 
-                k, 
-                Utils.infer_type_from_string(v)
-            )
-        setattr(
-            cls,
-            "as_dict",
-            {
-                k: Utils.infer_type_from_string(v) for k, v in params
-            }
-        )
-        return cls # ty: ignore[invalid-return-type]
+    def get(cls):
+        instance = cls()
+        for key, value in dbx.widgets.getAll().items():
+            parsed = Utils.infer_type_from_string(value)
+            setattr(instance, key, parsed)
+            instance.as_dict[key] = parsed
+        return instance
