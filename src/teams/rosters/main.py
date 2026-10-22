@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # Get current params
     params = Parameters.get()
-    logger.info(f"Running with parameters: {params.as_dict}")
+    logger.info(f"Start::Running with parameters: {params.as_dict}")
 
     # Get rosters
     try:
