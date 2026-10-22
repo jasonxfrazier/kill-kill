@@ -31,5 +31,8 @@ ignore = [
 quote-style = "double"
 indent-style = "tab"
 
+[tool.ty.environment]
+root = ["./src"]
+
 [tool.databricks.environment]
 environment_version = '6'
