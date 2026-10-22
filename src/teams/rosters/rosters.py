@@ -4,8 +4,8 @@ from src.common import Parameters
 
 if __name__ == "__main__":
     # Get current params
-    params = Parameters()
-    print(params.args)
+    params = Parameters.get()
+    print(params)
 
     # Get rosters
     rosters = load_rosters()
