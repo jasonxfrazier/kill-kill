@@ -7,9 +7,9 @@ class Parameters:
 	"""
 	Contains Environment Varables.
 	Usage:
-	    parameters = Parameters.get()
-	    parameters.expected_parameter
-	    parameters.as_dict
+	parameters = Parameters.get()
+	parameters.expected_parameter
+	parameters.as_dict
 	"""
 
 	def __init__(self):
