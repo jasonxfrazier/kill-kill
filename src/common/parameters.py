@@ -1,11 +1,14 @@
 from databricks.sdk.runtime import dbutils
-from typing import Dict, List
+from typing import Dict
+from dataclasses import dataclass
 
 
+@dataclass
 class Parameters:
-    def __init__(self):
-        self.args = dbutils.widgets.getAll()
-
-    # Public
-    def get_args(self, parameters: List[str]) -> Dict[str, str]:
-        return self.args
+    @classmethod
+    def get(cls) -> Dict[str, str]:
+        res = {}
+        for k, v in dbutils.widgets.getAll().items():
+            res[k] = v
+            setattr(cls, k, v)
+        return res
