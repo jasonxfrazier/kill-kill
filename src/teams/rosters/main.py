@@ -17,8 +17,8 @@ if __name__ == "__main__":
             seasons=params.seasons
         )
     except Exception as e:
-        logger.exception(f"Roster::Exception caught: {e}", e)
-    logger.info(f"Roster::Sucess, {params.height} rows of roster info obtained.")
+        logger.exception(f"Roster::Exception caught: {e}")
+    logger.info(f"Roster::Sucess, {rosters.height} rows of roster info obtained.")
 
     # Write to table
     table_name = f"{params.catalog}.{params.schema}.{params.table}"
@@ -26,5 +26,5 @@ if __name__ == "__main__":
         logger.info(f"Table::Writing roster info to {table_name}")
         spark.createDataFrame(rosters.to_arrow()).write.mode("overwrite").saveAsTable(table_name)
     except Exception as e:
-        logger.exception(f"Table::Exception caught: {e}", e)
+        logger.exception(f"Table::Exception caught: {e}")
     logger.info(f"Table::Succsefuly wrote to {table_name}")
