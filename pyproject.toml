@@ -27,4 +27,7 @@ ignore = [
 
 [tool.ruff.format]
 quote-style = "double"
-indent-style = "space"
+indent-style = "tab"
+
+[tool.databricks.environment]
+environment_version = '6'
