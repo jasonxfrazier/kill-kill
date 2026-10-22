@@ -9,6 +9,8 @@ class Utils:
             return True
         if value == "false":
             return False
+        if value in ["null", "Null", "none"]:
+            return None
         try:
             val = ast.literal_eval(value)
             if isinstance(val, list):
