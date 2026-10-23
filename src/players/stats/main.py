@@ -16,7 +16,7 @@ if __name__ == "__main__":
     if isinstance(params.seasons, int):
         rng = range(params.seasons, params.seasons + 1)
     else:
-        rng = range(params.seasons[-1], params.seasons[0], -1)
+        rng = range(params.seasons[-1], params.seasons[0] + 1, -1)
 
     # Load, stage, and insert data
     for summary_level in summary_levels:
