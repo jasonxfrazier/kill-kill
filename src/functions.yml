@@ -1,0 +1,238 @@
+# Source: https://nflreadpy.nflverse.com/api/load_functions/
+load_pbp:
+  description: Load NFL play-by-play data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 1999
+      description: Season(s) to load. None loads the current season; True loads all available seasons since 1999.
+load_player_stats:
+  description: Load NFL player statistics.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      description: Season(s) to load. None generally selects the current season; True generally selects all available seasons, where supported.
+    param_2:
+      name: summary_level
+      type: string
+      options: [week, reg, post, reg+post]
+      default: week
+      description: Summary level to load.
+load_team_stats:
+  description: Load NFL team statistics.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      description: Season(s) to load. None generally selects the current season; True generally selects all available seasons, where supported.
+    param_2:
+      name: summary_level
+      type: string
+      options: [week, reg, post, reg+post]
+      default: week
+      description: Summary level to load.
+load_schedules:
+  description: Load NFL schedules.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: true
+      description: Season(s) to load. None generally selects the current season; True generally selects all available seasons, where supported.
+load_teams:
+  description: Load NFL team information.
+  returns: polars.DataFrame
+  parameters: {}
+load_players:
+  description: Load NFL player information, including draft details and cross-platform ID mappings.
+  returns: polars.DataFrame
+  parameters: {}
+load_rosters:
+  description: Load NFL team rosters.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 1920
+      description: Season(s) to load. None loads the current roster year; True loads all available seasons since 1920.
+load_rosters_weekly:
+  description: Load NFL weekly rosters data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2002
+      description: Season(s) to load. Weekly rosters are available from 2002 onward.
+load_snap_counts:
+  description: Load NFL snap count data sourced from Pro Football Reference.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2012
+      description: Season(s) to load. True loads all available data since 2012.
+load_nextgen_stats:
+  description: Load NFL Next Gen Stats data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2016
+      description: Season(s) to load. True loads all available data since 2016.
+    param_2:
+      name: stat_type
+      type: string
+      options: [passing, receiving, rushing]
+      default: passing
+      description: Type of Next Gen Stats to load.
+load_ftn_charting:
+  description: Load FTN charting data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2022
+      description: Season(s) to load. True loads all available data since 2022.
+load_participation:
+  description: Load NFL participation data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2016
+      description: Season(s) to load. True loads all available data since 2016.
+load_draft_picks:
+  description: Load NFL draft pick data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: true
+      min_year: 1980
+      description: Season(s) to load. True loads all available data; draft picks cover 1980 onward.
+load_injuries:
+  description: Load NFL injury data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2009
+      description: Season(s) to load. True loads all available data since 2009.
+load_contracts:
+  description: Load NFL historical contracts data.
+  returns: polars.DataFrame
+  parameters: {}
+load_officials:
+  description: Load NFL officials data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: true
+      min_year: 2015
+      description: Season(s) to load. True loads all available data; officials records start in 2015.
+load_combine:
+  description: Load NFL Combine data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: true
+      description: Season(s) to load. None generally selects the current season; True generally selects all available seasons, where supported.
+load_depth_charts:
+  description: Load NFL depth charts data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2001
+      description: Season(s) to load. True loads all available data since 2001.
+load_trades:
+  description: Load NFL trades data.
+  returns: polars.DataFrame
+  parameters: {}
+load_pfr_advstats:
+  description: Load Pro Football Reference advanced statistics.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', bool, None]
+      default: null
+      min_year: 2018
+      description: Season(s) to load, applicable to weekly summaries. Data available since 2018.
+    param_2:
+      name: stat_type
+      type: string
+      options: [pass, rush, rec, def]
+      default: pass
+      description: Type of advanced statistics to load.
+    param_3:
+      name: summary_level
+      type: string
+      options: [week, season]
+      default: week
+      description: Weekly or season-level statistics.
+load_ff_playerids:
+  description: Load fantasy football player IDs from the DynastyProcess.com database.
+  returns: polars.DataFrame
+  parameters: {}
+load_ff_rankings:
+  description: Load fantasy football rankings data.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: type
+      type: string
+      options: [draft, week, all]
+      default: draft
+      description: Fantasy rankings type to load.
+load_ff_opportunity:
+  description: Load fantasy football opportunity data from ffverse/ffopportunity.
+  returns: polars.DataFrame
+  parameters:
+    param_1:
+      name: seasons
+      type: [int, 'list[int]', None]
+      default: null
+      description: Season(s) to load. None loads the current season.
+    param_2:
+      name: stat_type
+      type: string
+      options: [weekly, pbp_pass, pbp_rush]
+      default: weekly
+      description: Opportunity statistics dataset to load.
+    param_3:
+      name: model_version
+      type: string
+      options: [latest, v1.0.0]
+      default: latest
+      description: Model version to load.
