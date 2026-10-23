@@ -11,12 +11,12 @@ if __name__ == "__main__":
     logger.info(f"Start::Running with parameters: {params.as_dict}")
     table_name = f"{params.catalog}.{params.schema}.{params.table}"
     staging_dir = f"/Volumes/{params.catalog}/{params.schema}/staging"
-    
+
     if isinstance(params.seasons, int):
         rng = range(params.seasons, params.seasons + 1)
     else:
         rng = range(params.seasons[-1], params.seasons[0], -1)
-    
+
     # Load, stage, and insert data
     for season in rng:
         logger.info(f"PBP::Starting season {season}")
@@ -29,10 +29,7 @@ if __name__ == "__main__":
             logger.exception(f"PBP::FAILED loading season {season}")
             raise RuntimeError(f"PBP::LOAD FAILED | {season}") from e
 
-        logger.info(
-            f"PBP::SUCCESS loading {season} | "
-            f"{pbp.height:,} rows | {pbp.width} columns"
-        )
+        logger.info(f"PBP::SUCCESS loading {season} | {pbp.height:,} rows | {pbp.width} columns")
 
         # 2. Stage data
         staging_path = f"{staging_dir}/pbp_{season}.parquet"
@@ -60,12 +57,9 @@ if __name__ == "__main__":
         mode = "overwrite" if season == 2025 else "append"
 
         try:
-            logger.info(
-                f"Table::Writing season {season} to {table_name} | Mode: {mode}"
-            )
+            logger.info(f"Table::Writing season {season} to {table_name} | Mode: {mode}")
             (
-                df.write
-                .format("delta")
+                df.write.format("delta")
                 .mode(mode)
                 .option("mergeSchema", "true")
                 .saveAsTable(table_name)
