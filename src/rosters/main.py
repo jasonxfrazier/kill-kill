@@ -1,0 +1,37 @@
+from nflreadpy import load_rosters
+
+from src.common import Parameters, Utils
+from src.rosters.transform import Transform
+
+if __name__ == "__main__":
+    # Init logging
+    logger = Utils.logger(__name__)
+
+    # Get current params
+    params = Parameters.get()
+    logger.info(f"Start::Running with parameters: {params.as_dict}")
+
+    # Get rosters
+    try:
+        logger.info(f"Roster::Getting info for season(s): {params.seasons}")
+        rosters = load_rosters(seasons=params.seasons)
+    except Exception as e:
+        raise RuntimeError("Roster::FAILED") from e
+    logger.info(f"Roster::SUCCESS, {rosters.height} rows of roster info obtained.")
+
+    # Clean up
+    try:
+        logger.info("Transform::Standardizing column types.")
+        rosters = Transform.convert_types(rosters)
+    except Exception as e:
+        raise RuntimeError("Transform::FAILED") from e
+    logger.info("Transform::SUCCESS")
+
+    # Write to table
+    table_name = f"{params.catalog}.{params.schema}.{params.table}"
+    try:
+        logger.info(f"Table::Writing roster info to {table_name}")
+        spark.createDataFrame(rosters.to_arrow()).write.mode("overwrite").saveAsTable(table_name)  # noqa: F821
+    except Exception as e:
+        raise RuntimeError("Table::FAILED") from e
+    logger.info(f"Table::SUCCESS, wrote to {table_name}")
