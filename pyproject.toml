@@ -25,12 +25,11 @@ target-version = "py312"
 select = ["E", "W", "F", "I", "UP", "B", "N"]
 ignore = [
     "E501", # Line length is handled by the formatter
-    "W191",  # Allow tab indentation
 ]
 
 [tool.ruff.format]
 quote-style = "double"
-indent-style = "tab"
+indent-style = "space"
 
 [tool.ty.environment]
 root = ["./src"]
