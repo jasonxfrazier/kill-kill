@@ -1,7 +1,6 @@
 from nflreadpy import load_rosters
 
 from src.common import Parameters, Utils
-from src.rosters.transform import Transform
 
 if __name__ == "__main__":
     # Init logging
@@ -10,28 +9,76 @@ if __name__ == "__main__":
     # Get current params
     params = Parameters.get()
     logger.info(f"Start::Running with parameters: {params.as_dict}")
-
-    # Get rosters
-    try:
-        logger.info(f"Roster::Getting info for season(s): {params.seasons}")
-        rosters = load_rosters(seasons=params.seasons)
-    except Exception as e:
-        raise RuntimeError("Roster::FAILED") from e
-    logger.info(f"Roster::SUCCESS, {rosters.height} rows of roster info obtained.")
-
-    # Clean up
-    try:
-        logger.info("Transform::Standardizing column types.")
-        rosters = Transform.convert_types(rosters)
-    except Exception as e:
-        raise RuntimeError("Transform::FAILED") from e
-    logger.info("Transform::SUCCESS")
-
-    # Write to table
     table_name = f"{params.catalog}.{params.schema}.{params.table}"
-    try:
-        logger.info(f"Table::Writing roster info to {table_name}")
-        spark.createDataFrame(rosters.to_arrow()).write.mode("overwrite").saveAsTable(table_name)  # noqa: F821
-    except Exception as e:
-        raise RuntimeError("Table::FAILED") from e
-    logger.info(f"Table::SUCCESS, wrote to {table_name}")
+    staging_dir = f"/Volumes/{params.catalog}/{params.schema}/staging"
+
+    if isinstance(params.seasons, int):
+        rng = range(params.seasons, params.seasons + 1)
+    else:
+        rng = range(params.seasons[-1], params.seasons[0], -1)
+
+    # Load, stage, and insert data
+    for season in rng:
+        logger.info(f"Rosters::Starting season {season}")
+
+        # 1. Load data
+        try:
+            logger.info(f"Rosters::Loading season {season}")
+            rosters = load_rosters(seasons=[season])
+        except Exception as e:
+            raise RuntimeError(
+                f"Rosters::LOAD FAILED | {season}"
+            ) from e
+
+        logger.info(
+            f"Rosters::SUCCESS loading {season} | "
+            f"{rosters.height:,} rows | {rosters.width} columns"
+        )
+
+        # 2. Stage data
+        staging_path = f"{staging_dir}/rosters_{season}.parquet"
+
+        try:
+            logger.info(
+                f"Rosters::Staging season {season} to {staging_path}"
+            )
+            rosters.write_parquet(staging_path)
+        except Exception as e:
+            raise RuntimeError(
+                f"Rosters::STAGING FAILED | {season}"
+            ) from e
+
+        logger.info(f"Rosters::SUCCESS staging season {season}")
+
+        # 3. Read staged data
+        try:
+            logger.info(
+                f"Rosters::Reading staged season {season}"
+            )
+            df = spark.read.parquet(staging_path)  # noqa: F821
+        except Exception as e:
+            raise RuntimeError(
+                f"Rosters::READ FAILED | {season}"
+            ) from e
+
+        logger.info(f"Rosters::SUCCESS reading season {season}")
+
+        # 4. Write Delta table
+        mode = "overwrite" if season == 2025 else "append"
+        try:
+            logger.info(
+                f"Table::Writing season {season} to {table_name} | Mode: {mode}"
+            )
+            (
+                df.write.format("delta")
+                .mode(mode)
+                .option("mergeSchema", "true")
+                .saveAsTable(f"{table_name}")
+            )
+        except Exception as e:
+            raise RuntimeError(
+                f"Table::WRITE FAILED | {season}"
+            ) from e
+        logger.info(f"Table::SUCCESS writing season {season} ")
+
+    logger.info(f"Rosters::SUCCESS | All seasons ingested into {table_name}")

@@ -11,7 +11,6 @@ if __name__ == "__main__":
     logger.info(f"Start::Running with parameters: {params.as_dict}")
     table_name = f"{params.catalog}.{params.schema}.{params.table}"
     staging_dir = f"/Volumes/{params.catalog}/{params.schema}/staging"
-    summary_levels = ["week", "reg", "post", "reg+post"]
 
     if isinstance(params.seasons, int):
         rng = range(params.seasons, params.seasons + 1)
