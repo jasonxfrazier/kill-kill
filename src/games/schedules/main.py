@@ -26,9 +26,7 @@ if __name__ == "__main__":
             logger.info(f"Schedules::Loading season {season}")
             schedules = load_schedules(seasons=[season])
         except Exception as e:
-            raise RuntimeError(
-                f"Schedules::LOAD FAILED | {season}"
-            ) from e
+            raise RuntimeError(f"Schedules::LOAD FAILED | {season}") from e
 
         logger.info(
             f"Schedules::SUCCESS loading {season} | "
@@ -39,36 +37,26 @@ if __name__ == "__main__":
         staging_path = f"{staging_dir}/schedules_{season}.parquet"
 
         try:
-            logger.info(
-                f"Schedules::Staging season {season} to {staging_path}"
-            )
+            logger.info(f"Schedules::Staging season {season} to {staging_path}")
             schedules.write_parquet(staging_path)
         except Exception as e:
-            raise RuntimeError(
-                f"Schedules::STAGING FAILED | {season}"
-            ) from e
+            raise RuntimeError(f"Schedules::STAGING FAILED | {season}") from e
 
         logger.info(f"Schedules::SUCCESS staging season {season}")
 
         # 3. Read staged data
         try:
-            logger.info(
-                f"Schedules::Reading staged season {season}"
-            )
+            logger.info(f"Schedules::Reading staged season {season}")
             df = spark.read.parquet(staging_path)  # noqa: F821
         except Exception as e:
-            raise RuntimeError(
-                f"Schedules::READ FAILED | {season}"
-            ) from e
+            raise RuntimeError(f"Schedules::READ FAILED | {season}") from e
 
         logger.info(f"Schedules::SUCCESS reading season {season}")
 
         # 4. Write Delta table
         mode = "overwrite" if season == 2025 else "append"
         try:
-            logger.info(
-                f"Table::Writing season {season} to {table_name} | Mode: {mode}"
-            )
+            logger.info(f"Table::Writing season {season} to {table_name} | Mode: {mode}")
             (
                 df.write.format("delta")
                 .mode(mode)
@@ -76,9 +64,7 @@ if __name__ == "__main__":
                 .saveAsTable(f"{table_name}")
             )
         except Exception as e:
-            raise RuntimeError(
-                f"Table::WRITE FAILED | {season}"
-            ) from e
+            raise RuntimeError(f"Table::WRITE FAILED | {season}") from e
         logger.info(f"Table::SUCCESS writing season {season} ")
 
     logger.info(f"Schedules::SUCCESS | All seasons ingested into {table_name}")
