@@ -5,8 +5,17 @@ from typing import Any
 
 
 class Utils:
+	"""
+	Contains general utility methods.
+	Usage Ex:
+	Utils.infer_type_from_string("some string")
+	"""
+
 	@staticmethod
 	def infer_type_from_string(value: str) -> Any:
+		"""
+		Will infer a strings type and return it in its type correct form.
+		"""
 		if value == "true":
 			return True
 		if value == "false":
@@ -28,6 +37,9 @@ class Utils:
 
 	@staticmethod
 	def logger(name: str) -> logging.Logger:
+		"""
+		Python logging wrapper.
+		"""
 		logger = logging.getLogger(name)
 		logger.setLevel(logging.INFO)
 		if not logger.handlers:

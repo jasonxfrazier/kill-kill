@@ -6,7 +6,7 @@ from src.common.utils import Utils
 class Parameters:
 	"""
 	Contains Environment Varables.
-	Usage:
+	## Usage:
 	parameters = Parameters.get()
 	parameters.expected_parameter
 	parameters.as_dict
