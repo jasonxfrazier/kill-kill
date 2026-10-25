@@ -3,7 +3,7 @@ from pathlib import Path
 
 import yaml
 
-from common.utils import map_type
+from src.common.utils.map_type import map_type
 
 
 @dataclass
@@ -28,7 +28,7 @@ class YAMLReader:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
         self.functions: list[Function] = []
-        self.as_dict: dict[str, any] = {}
+        self.as_dict: dict[str, object] = {}
         self._parse()
 
         self.get = self._Get(self)

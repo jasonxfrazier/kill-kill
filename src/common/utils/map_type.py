@@ -11,5 +11,5 @@ TYPE_MAP = {
 }
 
 
-def map_type(value: str | list[str]) -> type | list[type]:
+def map_type(value: str | list[str]) -> object | list[type]:
     return TYPE_MAP.get(value) if isinstance(value, str) else [TYPE_MAP.get(x) for x in value]
