@@ -4,7 +4,6 @@ log = logger(__name__)
 
 if __name__ == "__main__":
     # Job Parameters
-
     job = JobReader()
     params = job.parameters
     job_name = params.get("job_name")
