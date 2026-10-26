@@ -21,11 +21,7 @@ class JobReader:
             if arg.startswith("--"):
                 parser.add_argument(arg.split("=")[0])
         args = parser.parse_args()
-        self.parameters = {
-            k: self._cast_types(v)
-            for k, v in vars(args).items()
-            if v is not None
-        }
+        self.parameters = {k: self._cast_types(v) for k, v in vars(args).items() if v is not None}
         for k, v in self.parameters.items():
             setattr(self, k, v)
 
