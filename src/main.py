@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # Write to table
     log.info("%s::Writing to Table at: %s", job_name, table_path)
     try:
-        spark_df.write.format("delta").mode("overwrite").saveAsTable(table_path)
+        spark_df.write.format("delta").mode("append").saveAsTable(table_path)
     except Exception:
         log.exception("%s::Writing to Table::FAIL", job_name)
         raise
