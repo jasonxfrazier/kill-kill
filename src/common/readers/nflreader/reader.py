@@ -19,7 +19,14 @@ class NFLReader:
 
     def _check_args(self, function_name: str, **kwargs) -> bool:
         info = self.config.as_dict.get(function_name).get("parameters").values()
-        self.func_types = {x["name"]: {"type": map_type(x.get("type")), "default": x.get("default"), "min_year": x.get("min_year")} for x in info}
+        self.func_types = {
+            x["name"]: {
+                "type": map_type(x.get("type")),
+                "default": x.get("default"),
+                "min_year": x.get("min_year"),
+            }
+            for x in info
+        }
         self.arg_types = kwargs.items()
         for k, v in self.arg_types:
             if not self.func_types.get(k):
@@ -30,8 +37,7 @@ class NFLReader:
             elif type(v) is not self.func_types.get(k).get("type"):
                 return False
         return True
-    
+
     def _execute_function(self, function_name: str, **kwargs) -> pl.DataFrame:
         func = getattr(nflreadpy, function_name)
         return func(**kwargs)
-    

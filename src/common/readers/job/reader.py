@@ -1,19 +1,18 @@
-from databricks.sdk.runtime import dbutils as dbx
 import ast
+
+from databricks.sdk.runtime import dbutils as dbx
+
 
 class JobReader:
     def __init__(self) -> None:
         job_params = dbx.widgets.getAll().items()
         for k, v in job_params:
             setattr(self, k, self._cast_types(v))
-        self.parameters = {
-            k: self._cast_types(v)
-            for k, v in job_params
-        }
+        self.parameters = {k: self._cast_types(v) for k, v in job_params}
 
     def as_dict(self) -> dict[str, object]:
         return self.__dict__
-    
+
     def _cast_types(self, value: str) -> object:
         """
         Will infer a strings type and try to replace it with its type correct form.
