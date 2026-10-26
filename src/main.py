@@ -45,20 +45,15 @@ if __name__ == "__main__":
     log.info("%s::Initializing NFLReader::SUCCESS", job_name)
 
     # Extract relavent parameters
-    if "+" in params.get("table"):
-        table_name = params.get("table").replace("+", "_")
-    else:
-        table_name = params.get("table")
-    log.info("%s::Getting Paths", job_name)
     try:
         function_name = params.get("function")
         function_info = nfl.config.get.function_info(function_name)
         allowed = {param.name for param in function_info.parameters}
         kwargs = {k: v for k, v in params.items() if k in allowed}
         staging_path = (
-            f"/Volumes/{params.get('catalog')}/{params.get('schema')}/staging/{table_name}.parquet"
+            f"/Volumes/{params.get('catalog')}/{params.get('schema')}/staging/{params.get("table")}.parquet"
         )
-        table_path = f"{params.get('catalog')}.{params.get('schema')}.{table_name}"
+        table_path = f"{params.get('catalog')}.{params.get('schema')}.{params.get("table")}"
     except Exception:
         log.exception("%s::Getting Paths::FAIL", job_name)
         raise
