@@ -12,7 +12,7 @@ if __name__ == "__main__":
         log.exception("Unable to Read")
         raise ValueError("Missing 'job_name' parameter")
     log.info("Job: %s | Starting", job_name)
-    
+
     # Check required
     log.info("%s::Checking Required Parameters", job_name)
     try:

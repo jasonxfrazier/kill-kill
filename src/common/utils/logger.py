@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 def logger(name: str) -> logging.Logger:
     """
     Python logging wrapper.
