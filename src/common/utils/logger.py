@@ -1,8 +1,6 @@
 import logging
 import sys
 
-
-@staticmethod
 def logger(name: str) -> logging.Logger:
     """
     Python logging wrapper.
