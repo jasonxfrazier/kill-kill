@@ -1,8 +1,8 @@
 # kill-kill
 
-This was an initial databackfill/exploration and is incomplete. This is where this version stops, the code base that accomplished this is not robust enough to continue to be brute forced and is being refactored before any more data is pulled.
+Databricks pipeline code for adding `nflreadpy` data to various tables. 
 
-### Current Transfered Data:
+### Transfered Data
 - load_pbp
 - load_player_stats
 - load_team_stats
@@ -18,8 +18,6 @@ This was an initial databackfill/exploration and is incomplete. This is where th
 - load_draft_picks
 - load_injuries
 - load_contracts
-
-### To Add
 - load_officials
 - load_combine
 - load_depth_charts
