@@ -25,9 +25,22 @@ class Function:
 
 
 class YAMLReader:
+    """
+    Parses YAML file containing informationa about `nflreadpy` function api info.
+    Initialize:
+    \treader = YAMLReader('path/to/file.yaml')
+    Attributes:
+    \treader.path
+    \treader.as_dict
+    Methods:
+    \treader.get.functions()
+    \treader.get.function_names()
+    \treader.get.function_info()
+    """
+
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
-        self.functions: list[Function] = []
+        self._functions: list[Function] = []
         self.as_dict: dict[str, object] = {}
         self._parse()
 
@@ -38,7 +51,7 @@ class YAMLReader:
             f = yaml.safe_load(file)
         for name, info in f.items():
             self.as_dict[name] = info
-            self.functions.append(
+            self._functions.append(
                 Function(
                     name=name,
                     description=info.get("description"),
@@ -62,10 +75,10 @@ class YAMLReader:
             self.reader = reader
 
         def functions(self) -> list[str]:
-            return self.reader.functions
+            return self.reader._functions
 
         def function_names(self) -> list[str]:
-            return [x.name for x in self.reader.functions]
+            return [x.name for x in self.reader._functions]
 
         def function_info(self, function: str) -> Function:
-            return next(f for f in self.reader.functions if f.name == function)
+            return next(f for f in self.reader._functions if f.name == function)

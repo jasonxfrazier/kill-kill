@@ -4,6 +4,17 @@ from databricks.sdk.runtime import dbutils as dbx
 
 
 class JobReader:
+    """
+    Reads Databricks parameters, infers types, and sets attributes dynamically.
+    Initialize:
+    \tjob = JobReader()
+    Attributes:
+    \tjob.parameters
+    \tjob.{{some parameter name}}
+    Methods:
+    \treader.as_dict()
+    """
+
     def __init__(self) -> None:
         job_params = dbx.widgets.getAll().items()
         for k, v in job_params:
@@ -14,16 +25,12 @@ class JobReader:
         return self.__dict__
 
     def _cast_types(self, value: str) -> object:
-        """
-        Will infer a strings type and try to replace it with its type correct form.
-        """
         if value.lower() == "true":
             return True
         if value.lower() == "false":
             return False
         if value.lower() in ("null", "none"):
             return None
-
         try:
             return ast.literal_eval(value)
         except (ValueError, SyntaxError):

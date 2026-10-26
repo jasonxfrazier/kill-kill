@@ -9,6 +9,16 @@ from src.common.utils.map_type import map_type
 
 @dataclass
 class NFLReader:
+    """
+    Takes `YAMLReader` object & orchestrates `nflreadpy` functions.
+    Initialize:
+    \treader = NFLReader('path/to/file.yaml')
+    Attributes:
+    \treader.config
+    Methods:
+    \treader.function()
+    """
+
     def __init__(self, config: YAMLReader) -> None:
         self.config = config
 
