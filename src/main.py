@@ -1,4 +1,6 @@
 from common import JobReader, NFLReader, YAMLReader, logger
+from delta.tables import DeltaTable
+from pyspark.sql import functions as F
 
 log = logger(__name__)
 
@@ -84,10 +86,33 @@ if __name__ == "__main__":
         raise
     log.info("%s::Reading to Spark DF::SUCCESS", job_name)
 
+    # Generate row IDs
+    log.info("%s::Generating Row IDs", job_name)
+    columns = sorted(spark_df.columns)
+    spark_df = spark_df.withColumn( 
+        "row_hash",
+        F.sha2(
+            F.to_json(F.struct(*[F.col(c) for c in columns])),
+            256,
+        ),
+    )
+    log.info("%s::Generating Row IDs::SUCCESS", job_name)
+
     # Write to table
     log.info("%s::Writing to Table at: %s", job_name, table_path)
+    target = DeltaTable.forName(spark, table_path)
+    target_aliased = target.alias("target")
+    source_aliased = spark_df.alias("source")
     try:
-        spark_df.write.format("delta").mode("append").saveAsTable(table_path)
+        (
+            target_aliased
+            .merge(
+                source_aliased,
+                "target.row_hash = source.row_hash",
+            )
+            .whenNotMatchedInsertAll()
+            .execute()
+        )
     except Exception:
         log.exception("%s::Writing to Table::FAIL", job_name)
         raise
