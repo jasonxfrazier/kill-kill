@@ -1,6 +1,7 @@
-from common import JobReader, NFLReader, YAMLReader, logger
 from delta.tables import DeltaTable
-from pyspark.sql import functions as F
+from pyspark.sql import functions as F  # noqa: N812
+
+from common import JobReader, NFLReader, YAMLReader, logger
 
 log = logger(__name__)
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     # Generate row IDs
     log.info("%s::Generating Row IDs", job_name)
     columns = sorted(spark_df.columns)
-    spark_df = spark_df.withColumn( 
+    spark_df = spark_df.withColumn(
         "row_hash",
         F.sha2(
             F.to_json(F.struct(*[F.col(c) for c in columns])),
@@ -100,13 +101,12 @@ if __name__ == "__main__":
 
     # Write to table
     log.info("%s::Writing to Table at: %s", job_name, table_path)
-    target = DeltaTable.forName(spark, table_path)
+    target = DeltaTable.forName(spark, table_path)  # noqa: F821
     target_aliased = target.alias("target")
     source_aliased = spark_df.alias("source")
     try:
         (
-            target_aliased
-            .merge(
+            target_aliased.merge(
                 source_aliased,
                 "target.row_hash = source.row_hash",
             )
