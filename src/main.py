@@ -101,6 +101,8 @@ if __name__ == "__main__":
 
     # Write to table
     log.info("%s::Writing to Table at: %s", job_name, table_path)
+    if not spark.catalog.tableExists(table_path):  # noqa: F821
+        spark_df.write.format("delta").mode("errorifexists").saveAsTable(table_path)
     target = DeltaTable.forName(spark, table_path)  # noqa: F821
     target_aliased = target.alias("target")
     source_aliased = spark_df.alias("source")
