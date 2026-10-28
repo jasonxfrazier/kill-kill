@@ -109,10 +109,7 @@ if __name__ == "__main__":
     target_columns = set(target.toDF().columns)
     source_columns = set(spark_df.columns)
     insert_columns = target_columns & source_columns
-    insert_values = {
-        col: f"source.`{col}`"
-        for col in insert_columns
-    }
+    insert_values = {col: f"source.`{col}`" for col in insert_columns}
     try:
         (
             target_aliased.merge(
