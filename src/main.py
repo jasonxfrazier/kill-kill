@@ -106,13 +106,20 @@ if __name__ == "__main__":
     target = DeltaTable.forName(spark, table_path)  # noqa: F821
     target_aliased = target.alias("target")
     source_aliased = spark_df.alias("source")
+    target_columns = set(target.toDF().columns)
+    source_columns = set(spark_df.columns)
+    insert_columns = target_columns & source_columns
+    insert_values = {
+        col: f"source.`{col}`"
+        for col in insert_columns
+    }
     try:
         (
             target_aliased.merge(
                 source_aliased,
                 "target.row_hash = source.row_hash",
             )
-            .whenNotMatchedInsertAll()
+            .whenNotMatchedInsert(values=insert_values)
             .execute()
         )
     except Exception:
