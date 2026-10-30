@@ -1,0 +1,97 @@
+resources:
+  jobs:
+    get_nextgen_stats:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get NextGen Stats
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_nextgen_stats
+        name: function
+      - default: nextgen
+        name: schema
+      - default: None
+        name: seasons
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - passing
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --stat_type
+          - passing
+          python_file: src/main.py
+          source: GIT
+        task_key: load_nextgen_stats_passing
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - receiving
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --stat_type
+          - receiving
+          python_file: src/main.py
+          source: GIT
+        task_key: load_nextgen_stats_receiving
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - rushing
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --stat_type
+          - rushing
+          python_file: src/main.py
+          source: GIT
+        task_key: load_nextgen_stats_rushing
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}

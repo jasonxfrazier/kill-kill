@@ -1,0 +1,35 @@
+variables:
+  schedule_daily:
+    type: complex
+    default:
+      quartz_cron_expression: 0 0 6 * * ?
+      timezone_id: America/New_York
+      pause_status: UNPAUSED
+  schedule_weekly:
+    type: complex
+    default:
+      quartz_cron_expression: 7 0 6 ? * Wed
+      timezone_id: America/New_York
+      pause_status: UNPAUSED
+  schedule_monthly:
+    type: complex
+    default:
+      quartz_cron_expression: 0 0 6 1 * ?
+      timezone_id: America/New_York
+      pause_status: UNPAUSED
+  job_environments:
+    type: complex
+    default:
+    - environment_key: Default
+      spec:
+        dependencies:
+        - -r /Workspace/Shared/reqs/k2/requirements.txt
+        environment_version: '6'
+  job_git_source:
+    type: complex
+    default:
+      git_branch: main
+      git_provider: gitHub
+      git_url: https://github.com/jasonxfrazier/kill-kill.git
+  job_max_concurrent_runs:
+    default: 1

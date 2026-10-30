@@ -1,0 +1,252 @@
+resources:
+  jobs:
+    get_pfr_advanced_stats:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get PFR Advanced Stats
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_pfr_advstats
+        name: function
+      - default: pfr
+        name: schema
+      - default: None
+        name: seasons
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - defense_week
+          - --stat_type
+          - def
+          - --summary_level
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_def_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - task_key: load_pfr_advstats_def_week
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_DONE
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - defense_season
+          - --stat_type
+          - def
+          - --summary_level
+          - season
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_def_season
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - passing_week
+          - --stat_type
+          - pass
+          - --summary_level
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_pass_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - task_key: load_pfr_advstats_pass_week
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_DONE
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - passing_season
+          - --stat_type
+          - pass
+          - --summary_level
+          - season
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_pass_season
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - receiving_week
+          - --stat_type
+          - rec
+          - --summary_level
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_rec_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - task_key: load_pfr_advstats_rec_week
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_DONE
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - receiving_season
+          - --stat_type
+          - rec
+          - --summary_level
+          - season
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_rec_season
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - rushing_week
+          - --stat_type
+          - rush
+          - --summary_level
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_rush_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - task_key: load_pfr_advstats_rush_week
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_DONE
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - rushing_season
+          - --stat_type
+          - rush
+          - --summary_level
+          - season
+          python_file: src/main.py
+          source: GIT
+        task_key: load_pfr_advstats_rush_season
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}
