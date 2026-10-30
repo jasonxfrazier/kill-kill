@@ -1,0 +1,95 @@
+resources:
+  jobs:
+    get_fantasy_rankings:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get Fantasy Rankings
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_ff_rankings
+        name: function
+      - default: fantasy
+        name: schema
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --table
+          - rankings_all
+          - --type
+          - all
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_rankings_all
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --table
+          - rankings_draft
+          - --type
+          - draft
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_rankings_draft
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --table
+          - rankings_week
+          - --type
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_rankings_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}

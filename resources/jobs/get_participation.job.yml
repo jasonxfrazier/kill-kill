@@ -1,0 +1,53 @@
+resources:
+  jobs:
+    get_participation:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get Participation
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_participation
+        name: function
+      - default: plays
+        name: schema
+      - default: None
+        name: seasons
+      - default: participation
+        name: table
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - '{{job.parameters.table}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          python_file: src/main.py
+          source: GIT
+        task_key: load_participation
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}

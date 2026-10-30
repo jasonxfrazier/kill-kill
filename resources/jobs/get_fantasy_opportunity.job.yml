@@ -1,0 +1,111 @@
+resources:
+  jobs:
+    get_fantasy_opportunity:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get Fantasy Opportunity
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_ff_opportunity
+        name: function
+      - default: latest
+        name: model_version
+      - default: fantasy
+        name: schema
+      - default: None
+        name: seasons
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - opportunity_pbp_pass
+          - --stat_type
+          - pbp_pass
+          - --model_version
+          - '{{job.parameters.model_version}}'
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_opportunity_pbp_pass
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - opportunity_pbp_rush
+          - --stat_type
+          - pbp_rush
+          - --model_version
+          - '{{job.parameters.model_version}}'
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_opportunity_pbp_rush
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --table
+          - opportunity_weekly
+          - --stat_type
+          - weekly
+          - --model_version
+          - '{{job.parameters.model_version}}'
+          python_file: src/main.py
+          source: GIT
+        task_key: load_ff_opportunity_weekly
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}

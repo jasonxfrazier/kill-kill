@@ -1,0 +1,159 @@
+resources:
+  jobs:
+    get_team_stats:
+      notification_settings:
+        no_alert_for_skipped_runs: false
+      name: Get Team Stats
+      parameters:
+      - default: k2
+        name: catalog
+      - default: load_team_stats
+        name: function
+      - default: teams
+        name: schema
+      - default: None
+        name: seasons
+      - default: stats
+        name: table
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      schedule: ${var.schedule_daily}
+      tags:
+        project: k2
+        source: nflreadpy
+      tasks:
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - '{{job.parameters.table}}_reg'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --summary_level
+          - reg
+          python_file: src/main.py
+          source: GIT
+        task_key: load_team_stats_reg
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - '{{job.parameters.table}}_week'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --summary_level
+          - week
+          python_file: src/main.py
+          source: GIT
+        task_key: load_team_stats_week
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - condition_task:
+          left: '{{job.parameters.seasons}}'
+          op: NOT_EQUAL
+          right: 'True'
+        disabled: false
+        email_notifications: {}
+        run_if: ALL_SUCCESS
+        task_key: seasons_check_True
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - condition_task:
+          left: '{{job.parameters.seasons}}'
+          op: NOT_EQUAL
+          right: None
+        depends_on:
+        - outcome: 'true'
+          task_key: seasons_check_True
+        disabled: false
+        email_notifications: {}
+        run_if: ALL_SUCCESS
+        task_key: seasons_check_none
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - outcome: 'true'
+          task_key: seasons_check_none
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - '{{job.parameters.table}}_post'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --summary_level
+          - post
+          python_file: src/main.py
+          source: GIT
+        task_key: load_team_stats_post
+        timeout_seconds: 0
+        webhook_notifications: {}
+      - depends_on:
+        - outcome: 'true'
+          task_key: seasons_check_none
+        disabled: false
+        email_notifications: {}
+        environment_key: Default
+        run_if: ALL_SUCCESS
+        spark_python_task:
+          parameters:
+          - --catalog
+          - '{{job.parameters.catalog}}'
+          - --schema
+          - '{{job.parameters.schema}}'
+          - --table
+          - '{{job.parameters.table}}_reg_post'
+          - --function
+          - '{{job.parameters.function}}'
+          - --job_name
+          - '{{job.name}}'
+          - --seasons
+          - '{{job.parameters.seasons}}'
+          - --summary_level
+          - reg+post
+          python_file: src/main.py
+          source: GIT
+        task_key: load_team_stats_reg_post
+        timeout_seconds: 0
+        webhook_notifications: {}
+      timeout_seconds: 0
+      webhook_notifications: {}
+      environments: ${var.job_environments}
+      git_source: ${var.job_git_source}
+      max_concurrent_runs: ${var.job_max_concurrent_runs}
