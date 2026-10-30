@@ -1,0 +1,10 @@
+bundle:
+  name: kill-kill
+
+include:
+  - resources/jobs/*.job.yml
+  - resources/config/*.yml
+
+targets:
+  prod:
+    mode: production
